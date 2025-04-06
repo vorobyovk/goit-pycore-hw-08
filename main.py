@@ -2,6 +2,7 @@ from collections import UserDict
 import re
 from datetime import datetime, timedelta
 import datetime as dt
+import pickle
 
 
 class Field:  # define class Field
@@ -93,7 +94,7 @@ class AddressBook(UserDict):  # define class AddressBook
         else:
             raise KeyError(f"Contact {name} not found.")
 
-    def get_upcoming_birthdays(self): # define function for find users with upcoming birthday in next 7 days
+    def get_upcoming_birthdays(self):  # define function for find users with upcoming birthday in next 7 days
         today = dt.datetime.now().date()
         upcoming_birthdays = []
         for record in self.data.values():
@@ -208,6 +209,7 @@ def all_contacts(book):  # define function for print list of all contacts
         for record in book.data.values():
             print(record)
 
+
 @input_error
 def show_birthday(args, book):  # define function for show birthday
     if len(args) < 1:
@@ -221,8 +223,22 @@ def show_birthday(args, book):  # define function for show birthday
     else:
         return f"No birthday set for {name}."
 
+
+def save_data(book, filename="addressbook.pkl"):
+    with open(filename, "wb") as f:
+        pickle.dump(book, f)
+
+
+def load_data(filename="addressbook.pkl"):
+    try:
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return AddressBook()  # Return a new address book if the file is not found
+
+
 def main():  # Define main function
-    book = AddressBook()
+    book = load_data()
     print(
         "Welcome to the assistant bot!\nYou can use command hello, add, change, phone, all, delete, add-birthday, birthdays, show-birthday or exit/close"
     )
@@ -256,6 +272,7 @@ def main():  # Define main function
         elif command == "show-birthday":
             print(show_birthday(args, book))
         elif command in ["exit", "close"]:
+            save_data(book)
             print(f"Goodbye!")
             break
         else:
