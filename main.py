@@ -224,12 +224,12 @@ def show_birthday(args, book):  # define function for show birthday
         return f"No birthday set for {name}."
 
 
-def save_data(book, filename="addressbook.pkl"):
+def save_data(book, filename="addressbook.pkl"): # define function for save data
     with open(filename, "wb") as f:
         pickle.dump(book, f)
 
 
-def load_data(filename="addressbook.pkl"):
+def load_data(filename="addressbook.pkl"): # define function for load data
     try:
         with open(filename, "rb") as f:
             return pickle.load(f)
